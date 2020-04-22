@@ -30,6 +30,9 @@ Check that you can interact with the server. The root endpoint should return a j
 
 ### Example token registration
 
+This is how you can send from your _Firebase SDK_ instance to your _Moodle_ server.
+You have to send the _FCM Token_ in the _pushid_ param.
+
 Note: Contains Invalid token values for security purposes.
 
 ```
