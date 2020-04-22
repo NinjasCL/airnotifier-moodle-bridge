@@ -41,7 +41,7 @@ https://my.moodle.site/webservice/rest/server.php?wstoken=skkd1m1m3123km32kkckas
 
 ## Sponsor https://www.fus-ed.com/[Fused]
 
-This extension was made possible thanks to the folks at https://www.fus-ed.com/[Fused].
+This code was made possible thanks to the folks at https://www.fus-ed.com/[Fused].
 _Fused_ merges decades of performance experience with leading-edge technology.
 
 ## Made by https://ninjas.cl[Ninjas.cl]
