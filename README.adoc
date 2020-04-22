@@ -9,7 +9,7 @@ This server uses https://nodejs.org/en/[_NodeJS_] instead of _Python_ (Used by _
 - `$ git clone https://github.com/NinjasCL/airnotifier-moodle-plugin-firebase-api`.
 - `$ cd airnotifier-moodle-plugin-firebase-api`.
 - `$ npm install`.
-- `$ npm install -g nodemon`.
+- `$ npm install -g forever`.
 
 Also install https://firebase.google.com/docs/libraries[Firebase SDK] to your platform in order to obtain _FCM Token_.
 
@@ -27,6 +27,8 @@ Check that you can interact with the server. The root endpoint should return a j
 
 - Start the server with `npm start`.
 - Send `FCM Token`. Not the native token.
+
+- You can also use `npm run forever` to init a background process.
 
 ### Example token registration
 
