@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "nodemon index.js",
+    "uuid": "node uuid.js"
+  },
+  "dependencies": {
+    "fastify": "^2.13.1",
+    "fastify-formbody": "^3.1.0",
+    "firebase-admin": "^8.10.0",
+    "uuidv4": "^6.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}

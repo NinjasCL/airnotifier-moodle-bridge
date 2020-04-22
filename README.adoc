@@ -1,0 +1,46 @@
+# AirNotifier Moodle Plugin Firebase API
+
+A replacement API for https://github.com/airnotifier/airnotifier/[AirNotifier] _Moodle Plugin_ that connects directly to _Firebase_. This was made since newer versions of _AirNotifier_ seems to be not working with the _Moodle Plugin_ due to usage of old apis. This server implements all needed endpoints and acts as a middleware between _Moodle AirNotifier Plugin_ and _Firebase_.
+
+## Installation
+
+- `$ git clone https://github.com/NinjasCL/airnotifier-moodle-plugin-firebase-api`.
+- `$ cd airnotifier-moodle-plugin-firebase-api`.
+- `$ npm install`.
+- `$ npm install -g nodemon`.
+
+Also install https://firebase.google.com/docs/libraries[Firebase SDK] to your platform in order to obtain _FCM Token_.
+
+## Configure
+
+You would need to get the `json` configuration from your https://console.firebase.google.com[firebase console].
+
+Also the headers `X-An-App-Key` and `X-An-App-Name` should be set in both server config and moodle plugin settings. Is recommended a random value using `npm run uuid` script for `X-An-App-Key`.
+
+Be sure to set the correct server address and port in your _Moodle Plugin Settings_. (Beware of trailing slashes in the server address).
+
+## Usage
+
+- Start the server with `npm start`.
+- Send `FCM Token`. Not the native token.
+
+### Example token registration
+
+Note: Contains Invalid token values for security purposes.
+
+```
+https://my.moodle.site/webservice/rest/server.php?wstoken=skkd1m1m3123km32kkckas3&appid=com.myapp.seed&name=Ninja's%20iPhone&model=iPhone&platform=ios&version=10.3.2&pushid=dWZfI--pSUXygaBKRVAslm:APA91bE-GiFkSCg-r1z-XoOVm-cPoXLd9dbhs3bZjPJb2t8GCCVFzrBE8UmoJSsjGbN2MhRq1MllOfFB_kOlZ1_3jvHaSrqrn7plxH1&uuid=12311-8EC8-4A93-A6C231228&wsfunction=core_user_add_user_device&moodlewsrestformat=json
+```
+
+## Sponsor https://www.fus-ed.com/[Fused]
+
+This extension was made possible thanks to the folks at https://www.fus-ed.com/[Fused].
+_Fused_ merges decades of performance experience with leading-edge technology.
+
+## Made by https://ninjas.cl[Ninjas.cl]
+
+This was developed (with :love:) by https://ninjas.cl[Ninjas.cl].
+
+## LICENSE
+
+MIT
