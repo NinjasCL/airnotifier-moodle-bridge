@@ -30,6 +30,13 @@ Check that you can interact with the server. The root endpoint should return a j
 
 - You can also use `npm run forever` to init a background process.
 
+```sh
+
+#!/bin/sh
+
+forever start --minUptime 1000 --spinSleepTime 1000  -o out.log -e err.log index.js
+```
+
 ### Example token registration
 
 This is how you can send from your _Firebase SDK_ instance to your _Moodle_ server.
