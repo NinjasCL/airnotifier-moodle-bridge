@@ -2,7 +2,7 @@
   "scripts": {
     "start": "node index.js",
     "uuid": "node uuid.js",
-    "forever": "nohup forever start index.js"
+    "forever": "forever start --minUptime 1000 --spinSleepTime 1000  -o out.log -e err.log index.js"
   },
   "dependencies": {
     "fastify": "^2.13.1",
