@@ -67,20 +67,38 @@ server.register(require("fastify-formbody"));
 // For more options.
 // Extra param is filled inside message_output_airnotifier.php file. Contains the main notification data.
 const notificationBuilder = ({ device, token, extra, request }) => {
-  server.log.info("Building Notification", {
+  server.log.info("Building Notification");
+  server.log.debug({
     device,
     token, // FCM token from Firebase SDK. Not the native platform token.
     extra,
     query: request.query,
   });
+  
+  let info = {
+    title: '',
+    body: ''
+  };
+  
+  if(extra) {
+    info = {
+     title: extra.sitefullname || '',
+     body: extra.smallmessage || ''
+    };
+  }
 
-  return {
+  const notification = {
     notification: {
-      title: extra.sitefullname,
-      body: extra.smallmessage,
+      title: info.title,
+      body: info.body,
     },
     token: token,
   };
+  
+  server.log.info("Notification built");
+  server.log.debug(notification);
+  
+  return notification;
 };
 
 // Firebase config
