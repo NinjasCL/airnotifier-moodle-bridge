@@ -48,6 +48,29 @@ Note: Contains Invalid token values for security purposes.
 https://my.moodle.site/webservice/rest/server.php?wstoken=skkd1m1m3123km32kkckas3&appid=com.myapp.seed&name=Ninja's%20iPhone&model=iPhone&platform=ios&version=10.3.2&pushid=dWZfI--pSUXygaBKRVAslm:APA91bE-GiFkSCg-r1z-XoOVm-cPoXLd9dbhs3bZjPJb2t8GCCVFzrBE8UmoJSsjGbN2MhRq1MllOfFB_kOlZ1_3jvHaSrqrn7plxH1&uuid=12311-8EC8-4A93-A6C231228&wsfunction=core_user_add_user_device&moodlewsrestformat=json
 ```
 
+### Example notification
+
+You can configure this request in _Postman_ or similar HTTP client.
+
+#### Endpoint 
+
+- POST: `http://<ip>:3000/api/v2/push`
+
+#### Headers
+
+- X-AN-APP-KEY: `A1159649-4DE0-4449-A8CF-ED0922312BF2`
+- X-AN-APP-NAME: `myapp`
+
+#### Body
+
+- format: `x-www-form-urlencoded`
+- token: `<FCM Token>`
+- extra[smallmessage]: `An small excerpt of the message`
+- extra[sitefullname]: `Who is sending the message`
+- extra[contexturl]: `Where to send the user after notification click`
+
+
+
 ## Sponsor https://www.fus-ed.com/[Fused]
 
 This code was made possible thanks to the folks at https://www.fus-ed.com/[Fused].
