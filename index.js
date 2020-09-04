@@ -54,7 +54,9 @@ const config = {
 // See https://github.com/fastify/fastify/tree/master/docs
 // for more config options
 const server = require("fastify")({
-  logger: true,
+  logger: {
+    level: "debug",
+  },
   // IgnoreTrailingSlash is needed to support calls from the moodle airnotifier plugin
   ignoreTrailingSlash: true,
 });
@@ -74,16 +76,16 @@ const notificationBuilder = ({ device, token, extra, request }) => {
     extra,
     query: request.query,
   });
-  
+
   let info = {
-    title: '',
-    body: ''
+    title: "",
+    body: "",
   };
-  
-  if(extra) {
+
+  if (extra) {
     info = {
-     title: extra.sitefullname || '',
-     body: extra.smallmessage || ''
+      title: extra.sitefullname || "",
+      body: extra.smallmessage || "",
     };
   }
 
@@ -94,10 +96,10 @@ const notificationBuilder = ({ device, token, extra, request }) => {
     },
     token: token,
   };
-  
+
   server.log.info("Notification built");
   server.log.debug(notification);
-  
+
   return notification;
 };
 
@@ -139,9 +141,22 @@ server.post("/api/v2/push", (request, reply) => {
 
   const { body } = request;
 
+  let json = body;
+
+  if (!body.token) {
+    // Server sent an akward json format
+    const keys = Object.keys(body);
+    let raw = "";
+    keys.forEach((key) => {
+      raw += key + body[key];
+    });
+
+    json = JSON.parse(raw);
+  }
+
   // This payload is from Moodle AirNotifier Plugin
   //  contains {device, token, extra } objects inside
-  const { device, token, extra } = body;
+  const { device, token, extra } = json;
 
   const message = notificationBuilder({ device, token, extra, request });
 
