@@ -1,13 +1,13 @@
-# AirNotifier Moodle Plugin Firebase API
+# AirNotifier Moodle Plugin Bridge
 
-A replacement API for https://github.com/airnotifier/airnotifier/[AirNotifier] server for the _AirNotifier Moodle Plugin_ that connects directly to _Firebase_. This was made since newer versions of _AirNotifier_ seems to be not working with the _Moodle Plugin_ due to usage of old apis. This server implements all needed endpoints and acts as a middleware between _Moodle AirNotifier Plugin_ and _Firebase_.
+A replacement API for https://github.com/airnotifier/airnotifier/[AirNotifier] server for the _AirNotifier Moodle Plugin_ that connects directly to _Firebase_. or others _Push Notification Providers_. This was made since newer versions of _AirNotifier_ seems to be not working with the _Moodle Plugin_ due to usage of old apis. This server implements all needed endpoints and acts as a middleware between _Moodle AirNotifier Plugin_ and _Push Notification Providers_.
 
 ## Installation
 
 This server uses https://nodejs.org/en/[_NodeJS_] instead of _Python_ (Used by _AirNotifier_). Be sure to have _NodeJS_ version >= 10 installed.
 
-- `$ git clone https://github.com/NinjasCL/airnotifier-moodle-plugin-firebase-api`.
-- `$ cd airnotifier-moodle-plugin-firebase-api`.
+- `$ git clone https://github.com/NinjasCL/airnotifier-moodle-bridgei`.
+- `$ cd airnotifier-moodle-bridge`.
 - `$ npm install`.
 - `$ npm install -g forever`.
 
