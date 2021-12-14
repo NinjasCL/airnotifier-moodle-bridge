@@ -25,95 +25,19 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// Secret config User and Key to send notifications
-const config = {
-  // Configure these headers the same as in AirNotifier Moodle Settings
-  headers: {
-    // X-An-App-Name header set in the Moodle Plugin Settings.
-    name: "X-An-App-Name",
-    // X-An-App-Key header set in the Moodle Plugin Settings.
-    // Is recommended to generate a secure random key like an uuidv4
-    // execute: npm run uuid
-    // to get a random unique id.
-    key: "X-An-App-Key",
-  },
+const adapters = require("./adapters").adapters;
 
-  port: 3000, // port to listen. default is 3000 for node servers
-  listen: "0.0.0.0", // restrict access to this ip range
-  whitelist: [], // leave empty to allow all ips.
-
-  // Obtain your credentials json and database address at firebase's console
-  firebase: {
-    // is recommended that this credential json key have a random name and is not version controlled
-    credential: "./service-account-key.json",
-    database: "https://<app name>.firebaseio.com",
-  },
-};
-
-// Server Config
-// See https://github.com/fastify/fastify/tree/master/docs
-// for more config options
-const server = require("fastify")({
-  logger: {
-    level: "debug",
-  },
-  // IgnoreTrailingSlash is needed to support calls from the moodle airnotifier plugin
-  ignoreTrailingSlash: true,
-});
+const settings = require("./config");
+const config = settings.config;
+const server = settings.server;
 
 // moodle airnotifier plugin send requests as application/x-www-form-urlencoded
 server.register(require("fastify-formbody"));
 
-// This is a special function to give format to the notification before sending it.
-// See https://www.techotopia.com/index.php/Sending_Firebase_Cloud_Messages_from_a_Node.js_Server
-// For more options.
-// Extra param is filled inside message_output_airnotifier.php file. Contains the main notification data.
-const notificationBuilder = ({ device, token, extra, request }) => {
-  server.log.info("Building Notification");
-  server.log.debug({
-    device,
-    token, // FCM token from Firebase SDK. Not the native platform token.
-    extra,
-    query: request.query,
-  });
-
-  let info = {
-    title: "",
-    body: "",
-  };
-
-  if (extra) {
-    info = {
-      title: extra.sitefullname || "",
-      body: extra.smallmessage || "",
-    };
-  }
-
-  const notification = {
-    notification: {
-      title: info.title,
-      body: info.body,
-    },
-    token: token,
-  };
-
-  server.log.info("Notification built");
-  server.log.debug(notification);
-
-  return notification;
-};
-
-// Firebase config
-const firebase = require("firebase-admin");
-firebase.initializeApp({
-  credential: firebase.credential.cert(require(config.firebase.credential)),
-  databaseURL: config.firebase.database,
-});
-
 // REST Endpoints
 
 // The same url as AirNotifier for Push Notifications
-server.post("/api/v2/push", (request, reply) => {
+server.post("/api/v2/push", async (request, reply) => {
   server.log.info("Got Push Request");
 
   reply.type("application/json");
@@ -155,32 +79,45 @@ server.post("/api/v2/push", (request, reply) => {
   }
 
   // This payload is from Moodle AirNotifier Plugin
-  //  contains {device, token, extra } objects inside
+  // contains {device, token, extra } objects inside
   const { device, token, extra } = json;
 
-  const message = notificationBuilder({ device, token, extra, request });
+  // Send the notification to all the available adapters
+  const logger = server.log;
+  const tasks = [];
+  const responses = [];
 
-  server.log.info("Sending Message", message);
-  // Send a message to the device corresponding to the provided
-  // registration token.
-  // https://firebase.google.com/docs/cloud-messaging/send-message#send_messages_to_specific_devices
+  for(const adapter in adapters) {
 
-  return firebase
-    .messaging()
-    .send(message)
-    .then((response) => {
-      // Response is a message ID string.
-      server.log.info("Successfully sent message:", response);
-      return reply.code(202).send({ success: true, message, response });
-    })
-    .catch((error) => {
-      server.log.info("Error sending message:", error);
-      return reply.code(400).send({ success: false, message, error });
-    });
+    const message = adapter.notification.build({ device, token, extra, request, logger });
+
+    server.log.info("Sending Message", message);
+
+    tasks.push(
+      adapter.notification.send({
+        message, 
+        logger
+      }).then(response => responses.push({
+        adapter:adapter.name,
+        message,
+        response
+      }
+    )));
+  }
+  
+  return Promise.all(tasks).then((res) => {
+    // Response is a message ID string.
+    server.log.info("Successfully sent message(s):", responses);
+    return reply.code(202).send({ success: true, data: { responses }});
+  })
+  .catch((error) => {
+    server.log.info("Error sending message(s):", error);
+    return reply.code(400).send({ success: false, data: { responses }, error });
+  });
 });
 
 // These routes are for completeness of the AirNotifier API
-// But since we are using firebase, they are not needed to be implemented
+// But since we are using the adapters, they are not needed to be implemented
 const okResponse = (request, reply, info = {}) =>
   reply
     .type("application/json")
