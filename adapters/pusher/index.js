@@ -7,13 +7,13 @@ const pusher = new PushNotifications({
     secretKey: '<secret key>'
 });
 
-// See https://www.techotopia.com/index.php/Sending_Firebase_Cloud_Messages_from_a_Node.js_Server
+// See https://pusher.com/docs/beams/reference/server-sdk-node/
 // For more options.
 const notificationBuilder = ({ device, token, extra, request, logger }) => {
   logger.info("Building Notification");
   logger.debug({
     device,
-    token, // Pusher Token from the SDK
+    token, // Pusher interest to send to the device
     extra,
     query: request.query,
   });
@@ -71,7 +71,9 @@ const adapter = {
 adapter.notification.build = notificationBuilder;
 
 adapter.notification.send = async ({message, logger}) => {
-  return pusher.publishToUsers([message.token], message.body);
+  // See https://pusher.com/docs/beams/concepts/device-interests/
+  // And https://pusher.com/docs/beams/reference/server-sdk-node/#publishtointerests
+  return pusher.publishToInterests([message.token], message.body);
 };
 
 module.exports = {client:pusher, adapter};

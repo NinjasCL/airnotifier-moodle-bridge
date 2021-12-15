@@ -1,12 +1,13 @@
-const firebase = require("./firebase");
-const pusher = require("./pusher");
+// Comment out unused adapters
+const enabled = ["firebase", "pusher"];
 
-const all = [firebase, pusher];
+const adapters = [];
+const all = [];
 
-// Export the enabled adapters
-const adapters = [
-  firebase.adapter, 
-  // pusher.adapter
-];
+enabled.forEach(name => {
+  const adapter = require(`./${name}`);
+  adapters.push(adapter.adapter);
+  all.push(adapter);
+});
 
-module.exports = {adapters, all};
+module.exports = {adapters, all, enabled};

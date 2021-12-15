@@ -1,21 +1,22 @@
 # AirNotifier Moodle Plugin Bridge
 
-A replacement API for https://github.com/airnotifier/airnotifier/[AirNotifier] server for the _AirNotifier Moodle Plugin_ that connects directly to _Firebase_. or others _Push Notification Providers_. This was made since newer versions of _AirNotifier_ seems to be not working with the _Moodle Plugin_ due to usage of old apis. This server implements all needed endpoints and acts as a middleware between _Moodle AirNotifier Plugin_ and _Push Notification Providers_.
+A replacement API for https://github.com/airnotifier/airnotifier/[AirNotifier] server for the _AirNotifier Moodle Plugin_ that connects directly to _Firebase_, or others _Push Notification Providers_. This was made since newer versions of _AirNotifier_ seems to be not working with the _Moodle Plugin_ due to usage of old apis. This server implements all needed endpoints and acts as a middleware between _Moodle AirNotifier Plugin_ and _Push Notification Providers_.
 
 ## Installation
 
 This server uses https://nodejs.org/en/[_NodeJS_] instead of _Python_ (Used by _AirNotifier_). Be sure to have _NodeJS_ version >= 10 installed.
 
-- `$ git clone https://github.com/NinjasCL/airnotifier-moodle-bridgei`.
+- `$ git clone https://github.com/NinjasCL/airnotifier-moodle-bridge`.
 - `$ cd airnotifier-moodle-bridge`.
 - `$ npm install`.
 - `$ npm install -g forever`.
 
-Also install https://firebase.google.com/docs/libraries[Firebase SDK] to your platform in order to obtain _FCM Token_.
+Also install https://firebase.google.com/docs/libraries[Firebase SDK] to your platform in order to obtain _FCM Token_ or the other Client SDKs needed.
 
 ## Configure
 
-You would need to get the `json` configuration from your https://console.firebase.google.com[firebase console].
+You would need to get the configuration from your https://console.firebase.google.com[firebase console] or other adapters.
+Check the `index.js` file for each adapter configuration.
 
 Also the headers `X-An-App-Key` and `X-An-App-Name` should be set in both server config and moodle plugin settings. Is recommended a random value using `npm run uuid` script for `X-An-App-Key`.
 

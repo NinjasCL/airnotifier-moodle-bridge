@@ -12,7 +12,7 @@ const config = {
   },
 
   port: 3000, // port to listen. default is 3000 for node servers
-  listen: "0.0.0.0", // restrict access to this ip range
+  listen: "0.0.0.0", // restrict access to this ip range. 0.0.0.0 means all ips allowed
   whitelist: [], // leave empty to allow all ips.
 };
 
@@ -26,5 +26,8 @@ const server = require("fastify")({
   // IgnoreTrailingSlash is needed to support calls from the moodle airnotifier plugin
   ignoreTrailingSlash: true,
 });
+
+// moodle airnotifier plugin send requests as application/x-www-form-urlencoded
+server.register(require("fastify-formbody"));
 
 module.exports = {server, config};

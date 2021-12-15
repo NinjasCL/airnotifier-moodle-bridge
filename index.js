@@ -25,14 +25,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-const adapters = require("./adapters").adapters;
-
-const settings = require("./config");
-const config = settings.config;
-const server = settings.server;
-
-// moodle airnotifier plugin send requests as application/x-www-form-urlencoded
-server.register(require("fastify-formbody"));
+const { adapters, enabled:enabledAdapters } = require("./adapters");
+const { config, server } = require("./config");
 
 // REST Endpoints
 
@@ -87,23 +81,24 @@ server.post("/api/v2/push", async (request, reply) => {
   const tasks = [];
   const responses = [];
 
-  for(const adapter in adapters) {
+  adapters.forEach(adapter => {
 
     const message = adapter.notification.build({ device, token, extra, request, logger });
 
     server.log.info("Sending Message", message);
 
-    tasks.push(
-      adapter.notification.send({
-        message, 
+    const send = adapter.notification.send({
+        message,
         logger
       }).then(response => responses.push({
         adapter:adapter.name,
         message,
         response
       }
-    )));
-  }
+    ));
+
+    tasks.push(send);
+  });
   
   return Promise.all(tasks).then((res) => {
     // Response is a message ID string.
@@ -191,5 +186,6 @@ server.listen(config.port, config.listen, (err, address) => {
   if (err) {
     server.log.error(err);
   }
-  server.log.info(`Server listening on ${address}`);
+
+  server.log.debug("Enabled Adapters:", enabledAdapters.toString());
 });
